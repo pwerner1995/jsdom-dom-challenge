@@ -6,28 +6,27 @@ let body = document.querySelector("body")
 
 let ul = document.querySelector("ul")
 
+let pause = document.querySelector("#pause")
+
 let likeHash = {}
+
+let clock = setInterval(setTime, 1000);
 
 function setTime(){
     currCount ++;
     counter.innerText = currCount
 }
 
-function likeTime(){
-    let like = document.createElement("li")
-    
+function likeTime(like){
     if (!likeHash[`${currCount}`]){
         likeHash[`${currCount}`] = 1
     }else if (likeHash[`${currCount}`]){
         likeHash[`${currCount}`] ++;
     }
     like.innerHTML = `${currCount} has been liked ${likeHash[`${currCount}`]} times.`
-    ul.appendChild(like)
+    
 }
 
-let pause = document.querySelector("#pause")
-let clock = setInterval(setTime, 1000);
-let paused = false
 body.addEventListener("click", function(e){
     if(e.target.id === "minus"){
         currCount = parseInt(currCount) - 1
@@ -42,14 +41,19 @@ body.addEventListener("click", function(e){
         clearInterval(clock)
         pause.innerHTML = "resume"
     }else if(e.target.dataset.purpose === "like"){
-        likeTime()
-    }else if(e.target.id === "comment-form"){
-        
+        if(ul.querySelector(`[data-id= "${currCount}"]`)){
+            let like = ul.querySelector(`[data-id= "${currCount}"]`)
+            likeTime(like)
+            
+        }else{
+            let like = document.createElement("li")
+            like.dataset.id = `${currCount}`
+            likeTime(like)
+            ul.appendChild(like)
+        }
     }
-
         
-        
-
+    
 })
 
 
